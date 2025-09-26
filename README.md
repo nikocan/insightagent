@@ -244,5 +244,8 @@ Bu doküman InsightAgent ürününün stratejik kapsamını, veri akışlarını
 | Yorum Analizi | `GET /reviews/`, `GET /reviews/highlights/{product_id}` | Duygu dağılımı ve konu özetleri |
 | Satın Alma & Tedarik | `GET /suppliers/`, `GET /suppliers/{id}/rfqs`, `GET /suppliers/by-product/{product_id}`, `POST /rfqs/`, `PATCH /rfqs/{id}` | Tedarikçi kataloğu, RFQ oluşturma ve durum güncelleme |
 | Raporlama | `GET /reports/{product_id}` | Paylaşılabilir rapor bağlantıları |
+| Portföy Analitiği | `GET /analytics/dashboard`, `GET /analytics/products/{product_id}/playbook` | Ürün seti genelinde KPI özetleri ve ürün özelinde aksiyon planları |
+- **Portföy Panosu:** Ortalama satış skoru, fiyat aralığı, açık RFQ sayısı, kreatif kanal kapsaması gibi metrikleri tek JSON yanıtında toplar.
+- **Ürün Playbook’u:** Fiyat boşluğu, duygu özeti, keyword önceliği ve sıradaki aksiyon adımlarını içeren 360° öneri seti döner.
 - **Güvenlik Hazırlığı:** Tüm endpointler için gelecekte JWT tabanlı kimlik doğrulama ve rate limiting proxy’si (Envoy/NGINX) planlanır.
 - **Entegrasyon Yol Haritası:** API istemcileri için Python SDK ve Zapier connector taslakları sonraki sürümlerde eklenecek.

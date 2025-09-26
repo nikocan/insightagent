@@ -89,3 +89,31 @@ def test_insight_endpoint() -> None:
     assert response.status_code == 200
     payload = response.json()
     assert payload["sales_score"] == 0.82
+
+
+def test_portfolio_dashboard_endpoint() -> None:
+    """Analytics dashboard should aggregate portfolio metrics."""
+
+    response = client.get("/analytics/dashboard")
+    assert response.status_code == 200
+    dashboard = response.json()
+
+    assert dashboard["overview"]["product_count"] == 2
+    assert dashboard["pricing"]["average_price_gap"] == 3.25
+    assert dashboard["pricing"]["lowest_offer"]["price"] == 32.5
+    top_growth = dashboard["growth"]["top_growing_products"]
+    assert top_growth[0]["trend_score"] >= top_growth[-1]["trend_score"]
+
+
+def test_product_playbook_endpoint() -> None:
+    """Product playbook should surface actionable recommendations."""
+
+    product = client.get("/products/?q=hydra").json()[0]
+    response = client.get(f"/analytics/products/{product['id']}/playbook")
+    assert response.status_code == 200
+    playbook = response.json()
+
+    assert playbook["product"]["id"] == product["id"]
+    assert playbook["pricing"]["price_gap"] == 4.01
+    assert playbook["sentiment"]["positive_ratio"] > 0
+    assert "Follow up on open RFQs" in playbook["actions"]

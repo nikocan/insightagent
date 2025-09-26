@@ -4,6 +4,7 @@ from fastapi import FastAPI
 
 from .database import get_db, initialize_db
 from .routers import (
+    analytics,
     creatives,
     insights,
     keywords,
@@ -22,6 +23,7 @@ initialize_db()
 app = FastAPI(title="InsightAgent API", version="0.1.0")
 
 # Register API routers representing each product module.
+app.include_router(analytics.router)
 app.include_router(products.router)
 app.include_router(insights.router)
 app.include_router(keywords.router)
