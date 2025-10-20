@@ -1,0 +1,2 @@
+# InsightAgent backend uses only Python standard library modules.
+# Pytest is pre-installed in the evaluation environment for running tests.
