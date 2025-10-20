@@ -117,3 +117,51 @@ def test_product_playbook_endpoint() -> None:
     assert playbook["pricing"]["price_gap"] == 4.01
     assert playbook["sentiment"]["positive_ratio"] > 0
     assert "Follow up on open RFQs" in playbook["actions"]
+
+
+def test_adstudio_brief_endpoint() -> None:
+    """Ad Studio brief should include compliance and asset context."""
+
+    product_id = client.get("/products/").json()[0]["id"]
+    response = client.get(f"/adstudio/briefs/{product_id}")
+    assert response.status_code == 200
+    payload = response.json()
+
+    assert payload["product"]["id"] == product_id
+    assert payload["brief"]["primary_message"].startswith("Overnight hydration")
+    assert payload["compliance"]["flagged_claims"]
+    assert payload["creative_assets"]
+
+
+def test_adstudio_variations_endpoint() -> None:
+    """Ad Studio variations endpoint should generate multiple copy options."""
+
+    product_id = client.get("/products/").json()[0]["id"]
+    response = client.post(
+        "/adstudio/variations",
+        json={
+            "product_id": product_id,
+            "channel": "instagram",
+            "tone": "Bold",
+            "variation_count": 2,
+        },
+    )
+    assert response.status_code == 200
+    payload = response.json()
+
+    assert payload["product"]["id"] == product_id
+    assert payload["channel"] == "instagram"
+    assert len(payload["variations"]) == 2
+    assert payload["avoid_phrases"]
+
+
+def test_adstudio_compliance_endpoint() -> None:
+    """Ad Studio compliance endpoint should surface risk guidance."""
+
+    product_id = client.get("/products/").json()[1]["id"]
+    response = client.get(f"/adstudio/compliance/{product_id}")
+    assert response.status_code == 200
+    payload = response.json()
+
+    assert payload["product"]["id"] == product_id
+    assert payload["level"] in {"low", "medium", "none"}

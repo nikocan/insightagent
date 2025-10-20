@@ -14,6 +14,8 @@ def seed_demo_data(conn: Connection) -> None:
 
     cursor = conn.execute("SELECT COUNT(1) AS count FROM products")
     if cursor.fetchone()["count"]:
+        if _ensure_adstudio_records(conn):
+            conn.commit()
         return
 
     now = datetime.now(timezone.utc)
@@ -303,4 +305,137 @@ def seed_demo_data(conn: Connection) -> None:
         ],
     )
 
+    _ensure_adstudio_records(conn, serum_id=serum_id, toner_id=toner_id)
     conn.commit()
+
+
+def _ensure_adstudio_records(
+    conn: Connection,
+    *,
+    serum_id: int | None = None,
+    toner_id: int | None = None,
+) -> bool:
+    """Guarantee Ad Studio tables contain demo rows for known products."""
+
+    inserted = False
+    if serum_id is None or toner_id is None:
+        title_map = {
+            row["title"]: row["id"]
+            for row in conn.execute(
+                """
+                SELECT id, title FROM products
+                WHERE title IN ('HydraGlow Night Serum', 'Aurora Mist Hydrating Toner')
+                """
+            ).fetchall()
+        }
+        serum_id = serum_id or title_map.get("HydraGlow Night Serum")
+        toner_id = toner_id or title_map.get("Aurora Mist Hydrating Toner")
+
+    if serum_id is None or toner_id is None:
+        return inserted
+
+    if not conn.execute(
+        "SELECT 1 FROM creative_briefs WHERE product_id = ?",
+        (serum_id,),
+    ).fetchone():
+        conn.execute(
+            """
+            INSERT INTO creative_briefs (
+                product_id,
+                tone,
+                objective,
+                primary_message,
+                call_to_action,
+                persona,
+                recommended_channels
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                serum_id,
+                "Premium & science-backed",
+                "Launch awareness and retarget lapsed buyers",
+                "Overnight hydration powered by bio-active vitamin complex",
+                "Start your 7-night glow reset",
+                "Skincare enthusiast 25-40",
+                json.dumps(["Instagram", "TikTok", "Meta Ads"]),
+            ),
+        )
+        inserted = True
+
+    if not conn.execute(
+        "SELECT 1 FROM creative_briefs WHERE product_id = ?",
+        (toner_id,),
+    ).fetchone():
+        conn.execute(
+            """
+            INSERT INTO creative_briefs (
+                product_id,
+                tone,
+                objective,
+                primary_message,
+                call_to_action,
+                persona,
+                recommended_channels
+            )
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+            """,
+            (
+                toner_id,
+                "Fresh & botanical",
+                "Drive add-to-cart for new visitors",
+                "Instant dewiness with spa-grade botanicals",
+                "Refresh my routine",
+                "Holistic beauty seeker 22-38",
+                json.dumps(["Pinterest", "Instagram", "Email"]),
+            ),
+        )
+        inserted = True
+
+    if not conn.execute(
+        "SELECT 1 FROM compliance_guidelines WHERE product_id = ?",
+        (serum_id,),
+    ).fetchone():
+        conn.execute(
+            """
+            INSERT INTO compliance_guidelines (
+                product_id,
+                level,
+                flagged_claims,
+                guidance
+            )
+            VALUES (?, ?, ?, ?)
+            """,
+            (
+                serum_id,
+                "medium",
+                json.dumps(["cures eczema", "dermatologist approved"]),
+                "Avoid medical cure claims and ensure clinical data before referencing professionals.",
+            ),
+        )
+        inserted = True
+
+    if not conn.execute(
+        "SELECT 1 FROM compliance_guidelines WHERE product_id = ?",
+        (toner_id,),
+    ).fetchone():
+        conn.execute(
+            """
+            INSERT INTO compliance_guidelines (
+                product_id,
+                level,
+                flagged_claims,
+                guidance
+            )
+            VALUES (?, ?, ?, ?)
+            """,
+            (
+                toner_id,
+                "low",
+                json.dumps(["miracle water"]),
+                "Use substantiated descriptors and include usage frequency guidance.",
+            ),
+        )
+        inserted = True
+
+    return inserted

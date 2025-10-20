@@ -1,6 +1,7 @@
 """Namespace package exposing API routers for InsightAgent modules."""
 
 from . import (
+    adstudio,
     analytics,
     creatives,
     insights,
@@ -14,6 +15,7 @@ from . import (
 )
 
 __all__ = [
+    "adstudio",
     "analytics",
     "creatives",
     "insights",

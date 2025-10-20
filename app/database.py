@@ -106,6 +106,23 @@ def initialize_db() -> None:
                 channel TEXT NOT NULL,
                 PRIMARY KEY (creative_id, channel)
             );
+            CREATE TABLE IF NOT EXISTS creative_briefs (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+                tone TEXT,
+                objective TEXT,
+                primary_message TEXT,
+                call_to_action TEXT,
+                persona TEXT,
+                recommended_channels TEXT
+            );
+            CREATE TABLE IF NOT EXISTS compliance_guidelines (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+                level TEXT NOT NULL,
+                flagged_claims TEXT,
+                guidance TEXT
+            );
             CREATE TABLE IF NOT EXISTS reports (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,

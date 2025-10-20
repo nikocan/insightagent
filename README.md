@@ -240,12 +240,14 @@ Bu doküman InsightAgent ürününün stratejik kapsamını, veri akışlarını
 | İçgörü & Trend | `GET /insights/{product_id}` | Satış/trend skorları, SWOT özetleri |
 | Fiyat & Teklifler | `GET /offers/`, `GET /offers/snapshot/{product_id}` | Kanal bazlı fiyat listesi ve anlık fiyat özeti |
 | SEO & Keyword | `GET /keywords/{product_id}` | Otomatik keyword madenciliği çıktıları |
-| Reklam Stüdyosu | `GET /creatives/{product_id}` | Metin/görsel kreatif önerileri |
+| Reklam Stüdyosu | `GET /creatives/{product_id}`, `GET /adstudio/briefs/{product_id}`, `POST /adstudio/variations` | Metin/görsel kreatif önerileri, kampanya brifi ve kanal bazlı varyasyon üretimi |
 | Yorum Analizi | `GET /reviews/`, `GET /reviews/highlights/{product_id}` | Duygu dağılımı ve konu özetleri |
 | Satın Alma & Tedarik | `GET /suppliers/`, `GET /suppliers/{id}/rfqs`, `GET /suppliers/by-product/{product_id}`, `POST /rfqs/`, `PATCH /rfqs/{id}` | Tedarikçi kataloğu, RFQ oluşturma ve durum güncelleme |
 | Raporlama | `GET /reports/{product_id}` | Paylaşılabilir rapor bağlantıları |
-| Portföy Analitiği | `GET /analytics/dashboard`, `GET /analytics/products/{product_id}/playbook` | Ürün seti genelinde KPI özetleri ve ürün özelinde aksiyon planları |
+| Portföy Analitiği | `GET /analytics/dashboard`, `GET /analytics/products/{product_id}/playbook`, `GET /adstudio/compliance/{product_id}` | Ürün seti genelinde KPI özetleri, ürün özelinde aksiyon planları ve reklam uyum kontrolü |
 - **Portföy Panosu:** Ortalama satış skoru, fiyat aralığı, açık RFQ sayısı, kreatif kanal kapsaması gibi metrikleri tek JSON yanıtında toplar.
 - **Ürün Playbook’u:** Fiyat boşluğu, duygu özeti, keyword önceliği ve sıradaki aksiyon adımlarını içeren 360° öneri seti döner.
+- **Ad Studio Brifi:** Platform bazlı tonlama, hedef persona, önerilen kanallar ve mevcut kreatif varlıkları tek uç noktada sunar.
+- **Uyum Kontrolü:** Riskli iddiaları, gerekli açıklamaları ve kaçınılması gereken ifadeleri raporlar.
 - **Güvenlik Hazırlığı:** Tüm endpointler için gelecekte JWT tabanlı kimlik doğrulama ve rate limiting proxy’si (Envoy/NGINX) planlanır.
 - **Entegrasyon Yol Haritası:** API istemcileri için Python SDK ve Zapier connector taslakları sonraki sürümlerde eklenecek.

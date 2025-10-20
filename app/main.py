@@ -4,6 +4,7 @@ from fastapi import FastAPI
 
 from .database import get_db, initialize_db
 from .routers import (
+    adstudio,
     analytics,
     creatives,
     insights,
@@ -28,6 +29,7 @@ app.include_router(products.router)
 app.include_router(insights.router)
 app.include_router(keywords.router)
 app.include_router(creatives.router)
+app.include_router(adstudio.router)
 app.include_router(offers.router)
 app.include_router(suppliers.router)
 app.include_router(reports.router)
