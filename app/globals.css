@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light dark;
+}
+
+body {
+  @apply min-h-screen bg-slate-950 text-slate-50 antialiased;
+}
+
+a {
+  @apply text-brand hover:text-brand-light transition-colors;
+}
+
+button {
+  @apply rounded-md bg-brand px-4 py-2 font-medium text-white transition-colors hover:bg-brand-dark;
+}
